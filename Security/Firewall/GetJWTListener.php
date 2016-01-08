@@ -1,3 +1,5 @@
+<?php
+
 namespace Gfreeau\Bundle\GetJWTBundle\Security\Firewall;
 
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
