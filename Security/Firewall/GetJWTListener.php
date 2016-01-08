@@ -1,7 +1,7 @@
-<?php
 namespace Gfreeau\Bundle\GetJWTBundle\Security\Firewall;
+
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Http\Firewall\ListenerInterface;
-use Symfony\Component\Security\Core\SecurityContextInterface;
 use Symfony\Component\Security\Core\Authentication\AuthenticationManagerInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationFailureHandlerInterface;
 use Symfony\Component\Security\Http\Authentication\AuthenticationSuccessHandlerInterface;
@@ -16,6 +16,7 @@ use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Psr\Log\LoggerInterface;
 use RuntimeException;
 use InvalidArgumentException;
+
 class GetJWTListener implements ListenerInterface
 {
     protected $providerKey;
@@ -25,8 +26,9 @@ class GetJWTListener implements ListenerInterface
     private $authenticationManager;
     private $successHandler;
     private $failureHandler;
+
     /**
-     * @param SecurityContextInterface $securityContext
+     * @param TokenStorageInterface $securityContext
      * @param AuthenticationManagerInterface $authenticationManager
      * @param $providerKey
      * @param AuthenticationSuccessHandlerInterface $successHandler
@@ -35,7 +37,7 @@ class GetJWTListener implements ListenerInterface
      * @param LoggerInterface $logger
      * @throws InvalidArgumentException
      */
-    public function __construct(SecurityContextInterface $securityContext, AuthenticationManagerInterface $authenticationManager, $providerKey, AuthenticationSuccessHandlerInterface $successHandler, AuthenticationFailureHandlerInterface $failureHandler = null, array $options = array(), LoggerInterface $logger = null)
+    public function __construct(TokenStorageInterface $securityContext, AuthenticationManagerInterface $authenticationManager, $providerKey, AuthenticationSuccessHandlerInterface $successHandler, AuthenticationFailureHandlerInterface $failureHandler = null, array $options = array(), LoggerInterface $logger = null)
     {
         if (empty($providerKey)) {
             throw new InvalidArgumentException('$providerKey must not be empty.');
@@ -52,6 +54,7 @@ class GetJWTListener implements ListenerInterface
         ), $options);
         $this->logger = $logger;
     }
+
     /**
      * {@inheritdoc}
      */
@@ -93,6 +96,7 @@ class GetJWTListener implements ListenerInterface
         }
         $event->setResponse($response);
     }
+
     protected function onSuccess(GetResponseEvent $event, Request $request, TokenInterface $token)
     {
         if (null !== $this->logger) {
@@ -104,6 +108,7 @@ class GetJWTListener implements ListenerInterface
         }
         return $response;
     }
+
     protected function onFailure(GetResponseEvent $event, Request $request, AuthenticationException $failed)
     {
         if (null !== $this->logger) {
